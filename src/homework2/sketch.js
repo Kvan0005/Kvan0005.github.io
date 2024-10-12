@@ -1,12 +1,5 @@
 /* eslint-disable no-undef, no-unused-vars */
-
-class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
+// use code from src/points.js which was imported in index.html
 var points = [];
 
 function setup() {
