@@ -8,6 +8,7 @@ function grahamScan(points){
     }
     points.sort((a, b) => {return a.x - b.x;});
     let firstPoint = points[0];
+    points.shift(); // to 
 
     points.sort((a, b) => { 
         let turn = getTurn(a, firstPoint, b); // this will return which point is higher the other based on the first point
@@ -18,7 +19,7 @@ function grahamScan(points){
     hull.push(firstPoint);
     hull.push(points[0]);
     hull.push(points[1]);
-    for (let i = 2; i < n; i++) {
+    for (let i = 1; i < n-1; i++) {
         while(getTurn(hull[hull.length - 2], hull[hull.length - 1], points[i]) !== DIRECTION.LEFT){
             hull.pop();
         }

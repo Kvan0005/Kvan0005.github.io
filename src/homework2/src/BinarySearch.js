@@ -2,9 +2,6 @@ function BinarySearch(lower, upper, callback){
     if (allSame(lower, upper, callback)) {
         return -1;
     }
-    if (callback(upper)) {
-        return upper;
-    }
     // convert the array to a list of booleans using the callback function
     while (lower < upper) {
         let mid = ((lower + upper) / 2) | 0; 
@@ -25,9 +22,10 @@ function BinarySearch(lower, upper, callback){
 
 function allSame(lower, upper, callback){
     let list = [];
-    for (let i = lower; i < upper; i++) {
+    for (let i = lower; i < upper+1; i++) {
         list.push(callback(i));
     }
+    print(list);
     return list.every((val, i, arr) => val === arr[0]);
 }
 

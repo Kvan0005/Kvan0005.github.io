@@ -171,6 +171,10 @@ function drawPolygone() {
       } else {
         fill("red");
         stroke("red");
+        // let upperTangent = polygon.getUpperTangentFacingPoint(pointToCheck);
+        // let lowerTangent = polygon.getLowerTangentFacingPoint(pointToCheck);
+        // line(pointToCheck.x, pointToCheck.y, upperTangent.x, upperTangent.y);
+        // line(pointToCheck.x, pointToCheck.y, lowerTangent.x, lowerTangent.y);
       }
       ellipse(pointToCheck.x, pointToCheck.y, 4, 4);
       text("Point is inside: " + isInside, 200, 200);
