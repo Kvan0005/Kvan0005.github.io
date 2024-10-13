@@ -4,9 +4,17 @@ export const DIRECTION = {
     STRAIGHT: "straight",
 };
 
-const ISINSIDE = {
-    INSIDE: "Inside",
-    OUTSIDE: "Outside",
+export const ISINSIDE = {
+    INSIDE: "INSIDE",
+    OUTSIDE: "OUTSIDE",
     NODETERMINED: "No information",
 };
 
+
+if (window.DIRECTION === undefined) {
+    window.DIRECTION = DIRECTION;
+}
+
+if (window.ISINSIDE === undefined) {
+    window.ISINSIDE = ISINSIDE;
+}

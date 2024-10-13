@@ -1,16 +1,16 @@
 /* eslint-disable no-undef, no-unused-vars */
+// global variables
+
 var points = [];
-
-const MODE ={
-  CONVEX_HULL: 0,
-
-}
 var convexHull = [];
 var mainDraw = null;
-var mode = MODE.CONVEX_HULL;
-var temporaryButton =[];
+var temporaryButton = [];
 
-
+// this is for the polygon
+var modePolygone = false;
+var polygon = null;
+var pointToCheck = null;
+// ---------------------------------------------------------------------view functions ---------------------------------------------------------------------
 function setup() {
   createCanvas(windowWidth, windowHeight);
   // clear all buttons
@@ -19,11 +19,12 @@ function setup() {
   fill("black");
   textSize(40);
   button = customButton(30, 85, "Clear", resetpoints);
-  dropBox = createDropBox(30, 120, ["CH(S) algo", "Option 2"]);
+  dropBox = createDropBox(30, 120, ["CH(S) algo", "polygon algo"]);
   changeMode("0");
 }
 
 function customButton(x, y, text, callback) {
+  print("button created:", text);
   button = createButton(text);
   button.position(x, y);
   button.mousePressed(callback);
@@ -40,7 +41,6 @@ function createDropBox(x, y, options) {
   dropBox.changed(() => {
     for (i in options) {
       if (dropBox.value() === options[i]) {
-        print(i);
         changeMode(i);
         break;
       }
@@ -50,16 +50,19 @@ function createDropBox(x, y, options) {
 }
 
 function changeMode(i) {
-  temporaryButton.forEach((button) => {
-    button.remove();
-  }
-  );
+  temporaryButton.forEach((button) => {try {button.remove();} catch (e) {print(e);}});
+  temporaryButton = [];
   resetpoints();
   switch (i) {
     case "0":
-      mode = MODE.CONVEX_HULL;
+      print("Convex Hull");
       temporaryButton = drawConvexHullSetup();
       mainDraw = drawConvexHull;
+      break;
+    case "1":
+      print("Polygone");
+      temporaryButton = drawPolygoneSetup();
+      mainDraw = drawPolygone;
       break;
   }
 }
@@ -67,6 +70,9 @@ function changeMode(i) {
 function resetpoints() {
   points = [];
   convexHull = [];
+  polygon = null;
+  pointToCheck = null;
+  modePolygone = false;
 }
 
 function draw() {
@@ -76,10 +82,9 @@ function draw() {
     ellipse(points[i].x, points[i].y, 4, 4);
   }
   // draw a gray rectangle 
-  fill(200);
+  fill("gray");
   rect(0, 0, 200, height);
   fill("black");
-
   if (mainDraw !== null) {
     mainDraw();
   }
@@ -87,14 +92,25 @@ function draw() {
 
 function mousePressed() {
   if (mouseX > 200){
-    points.push(new PointStructure(mouseX, mouseY));
+    if (polygonPoint()) {
+      pointToCheck = new PointStructure(mouseX, mouseY);
+    } else {
+      points.push(new PointStructure(mouseX, mouseY));
+    } 
   }
 }
 
+function polygonPoint() {
+  // this is for swapping between polygon point and the point that we want to check
+  print(window.dropBox.value());
+  return window.dropBox.value() === "polygon algo" && modePolygone===true
+}
 // This Redraws the Canvas when resized
 windowResized = function () {
   resizeCanvas(windowWidth, windowHeight);
 };
+// ---------------------------------------------------------------------view functions ---------------------------------------------------------------------
+// ---------------------------------------------------------------------Component functions ---------------------------------------------------------------------
 
 
 // ------------------- Convex Hull -------------------
@@ -126,5 +142,53 @@ function drawConvexHull() {
 function drawConvexHullSetup() {
   return [customButton(30, 150, "Convex Hull", ConvexHullAlgorithm)];
 }
-
 // ----------------------------------------------------
+// -------------------------Polygone---------------------
+function PolygoneAlgorithm() { 
+  polygon = new PolygonStruct(grahamScan(points));
+}
+
+function drawPolygone() {
+  if (polygon != null) {
+    let polygonPoints = polygon.getPoints();
+    for (i in polygonPoints) {
+      ellipse(polygonPoints[i].x, polygonPoints[i].y, 4, 4);
+    }
+    stroke("red");
+    for (let i = 0; i < polygonPoints.length; i++) {
+      if (i == polygonPoints.length - 1) {
+        line(polygonPoints[i].x, polygonPoints[i].y, polygonPoints[0].x, polygonPoints[0].y);
+      } else {
+        line(polygonPoints[i].x, polygonPoints[i].y, polygonPoints[i + 1].x, polygonPoints[i + 1].y);
+      }
+    }
+    
+    if (pointToCheck != null) {
+      let isInside = polygon.isPointInside(pointToCheck);
+      if (isInside === ISINSIDE.INSIDE) {
+        fill("green");
+        stroke("green");
+      } else {
+        fill("red");
+        stroke("red");
+      }
+      ellipse(pointToCheck.x, pointToCheck.y, 4, 4);
+      text("Point is inside: " + isInside, 200, 200);
+    }
+    
+    fill("black");
+    stroke("black");
+  }
+}
+
+function drawPolygoneSetup() {
+  return [
+    customButton(30, 150, "Polygone", PolygoneAlgorithm),
+    customButton(30, 200, "Toggle mode", () => { 
+      print("Toggle mode");
+      modePolygone = !modePolygone;
+    })
+  ];
+}
+
+// ---------------------------------------------------------------------Component functions ---------------------------------------------------------------------
