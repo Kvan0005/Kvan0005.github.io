@@ -65,7 +65,11 @@ class Polygon{
 
         let dir = nearAndFar.p0 === DISTANCE.NEAR? DIRECTION.LEFT : DIRECTION.RIGHT;
         let functionToUse = (i) => { return getTurn(point, this.points[i], this.points[(i+1)%this.length()] ) === dir; };
-        upperTangent = BinarySearch(nearAndFar.compl, this.length()-1, functionToUse)+1;
+        if (nearAndFar.compl ===  this.length()-1) {
+            upperTangent = BinarySearch(1, nearAndFar.compl, functionToUse);
+        }else{
+            upperTangent = BinarySearch(nearAndFar.compl, this.length()-1, functionToUse);
+        }
         print("upperTangent=:",upperTangent);
         return this.points[upperTangent];
 
