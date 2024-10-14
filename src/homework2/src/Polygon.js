@@ -32,13 +32,15 @@ class Polygon{
             // will be unhadled for now
             return null;
         }
+        print("p0 status: ",p0FarOrNear);
         let oppositeofP1 = BinarySearch(1, this.length()-1, (i) => { 
             let v = getTurn(point, this.points[0], this.points[i]) === p0FarOrNear;
             return v;
         });
-
+        print("opposite of p0: ", oppositeofP1);
         if (oppositeofP1 === -1) {
             print("Error: no opposite found");
+            exit();
             return null; // this will be unhadled for now
         }
 

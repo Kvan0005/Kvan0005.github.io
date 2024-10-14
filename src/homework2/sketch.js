@@ -24,7 +24,7 @@ function setup() {
 }
 
 function customButton(x, y, text, callback) {
-  print("button created:", text);
+  print("Creating button", text);
   button = createButton(text);
   button.position(x, y);
   button.mousePressed(callback);
@@ -102,7 +102,6 @@ function mousePressed() {
 
 function polygonPoint() {
   // this is for swapping between polygon point and the point that we want to check
-  print(window.dropBox.value());
   return window.dropBox.value() === "polygon algo" && modePolygone===true
 }
 // This Redraws the Canvas when resized
@@ -171,10 +170,10 @@ function drawPolygone() {
       } else {
         fill("red");
         stroke("red");
-        // let upperTangent = polygon.getUpperTangentFacingPoint(pointToCheck);
-        // let lowerTangent = polygon.getLowerTangentFacingPoint(pointToCheck);
-        // line(pointToCheck.x, pointToCheck.y, upperTangent.x, upperTangent.y);
-        // line(pointToCheck.x, pointToCheck.y, lowerTangent.x, lowerTangent.y);
+        let upperTangent = polygon.getUpperTangentFacingPoint(pointToCheck);
+        let lowerTangent = polygon.getLowerTangentFacingPoint(pointToCheck);
+        line(pointToCheck.x, pointToCheck.y, upperTangent.x, upperTangent.y);
+        line(pointToCheck.x, pointToCheck.y, lowerTangent.x, lowerTangent.y);
       }
       ellipse(pointToCheck.x, pointToCheck.y, 4, 4);
       text("Point is inside: " + isInside, 200, 200);
