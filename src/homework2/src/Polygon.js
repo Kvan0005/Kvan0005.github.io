@@ -23,23 +23,21 @@ class Polygon{
         if (lower_bound === -1 || point.x < cpoints[0].x) { // case where the point is to the left of the leftmost point meaning it is outside
             return ISINSIDE.OUTSIDE;
         }
-        return getTurn(cpoints[lower_bound], cpoints[lower_bound + 1], point) != DIRECTION.RIGHT? ISINSIDE.INSIDE : ISINSIDE.OUTSIDE;
+        return getTurn(cpoints[lower_bound], cpoints[(lower_bound + 1)%n], point) != DIRECTION.RIGHT? ISINSIDE.INSIDE : ISINSIDE.OUTSIDE;
     }
 
-    _getNearAndFarSide(point){i
+    _getNearAndFarSide(point){
         let p0FarOrNear = getTurn(point, this.points[0], this.points[1]); // this will idicate the direction of the first point and also if p1 is near or far
         if (p0FarOrNear === DIRECTION.STRAIGHT) {
             // will be unhadled for now
             return null;
         }
-        print("p0 status: ",p0FarOrNear);
-        let oppositeofP1 = BinarySearch(1, this.length()-1, (i) => { 
+        let oppositeofP1 = BinarySearch(1, this.length()-1, (i) => {  // todo check if the point is on the line for oppite == 0
             let v = getTurn(point, this.points[0], this.points[i]) === p0FarOrNear;
             return v;
         });
-        print("opposite of p0: ", oppositeofP1);
+        print("opo=:",oppositeofP1);
         if (oppositeofP1 === -1) {
-            print("Error: no opposite found");
             exit();
             return null; // this will be unhadled for now
         }
@@ -48,14 +46,12 @@ class Polygon{
         if (isP0far) {
             return {
                 p0: DISTANCE.FAR,
-                near: this.points[oppositeofP1],
-                far: this.points[0]
+                compl: oppositeofP1,
             };
         } else{
             return {
                 p0: DISTANCE.NEAR,
-                near: this.points[0],
-                far: this.points[oppositeofP1]
+                compl: oppositeofP1,
             };
         }
     }
@@ -64,21 +60,14 @@ class Polygon{
         if (this.isPointInside(point) === ISINSIDE.INSIDE) {
             return null;
         }
-        let n = this.length();
         let nearAndFar = this._getNearAndFarSide(point);
         let upperTangent = null;
 
-        print(nearAndFar);
-        if (nearAndFar.p0 === DISTANCE.NEAR) {
-            upperTangent = BinarySearch(nearAndFar.far, nearAndFar.near, (i) => {
-                return getTurn(point, this.points[i], points[(i+1)%n] ) === DIRECTION.LEFT;
-            });
-        } else{
-            upperTangent = BinarySearch(nearAndFar.near, nearAndFar.far, (i) => {
-                return getTurn(point, this.points[i], points[(i+1)%n] ) === DIRECTION.RIGHT;
-            });
-        }
-        return upperTangent;
+        let dir = nearAndFar.p0 === DISTANCE.NEAR? DIRECTION.LEFT : DIRECTION.RIGHT;
+        let functionToUse = (i) => { return getTurn(point, this.points[i], this.points[(i+1)%this.length()] ) === dir; };
+        upperTangent = BinarySearch(nearAndFar.compl, this.length()-1, functionToUse)+1;
+        print("upperTangent=:",upperTangent);
+        return this.points[upperTangent];
 
     
     }
@@ -88,7 +77,6 @@ class Polygon{
         if (this.isPointInside(point) === ISINSIDE.INSIDE) {
             return null;
         }
-        let n = this.length();
         let nearAndFar = this._getNearAndFarSide(point);
         let lowerTangent = null;
         if (nearAndFar.p0 === DISTANCE.NEAR) {
