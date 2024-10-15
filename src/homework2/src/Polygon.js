@@ -27,33 +27,30 @@ class Polygon{
     }
 
     _getNearAndFarSide(point){
-        let p0FarOrNear = getTurn(point, this.points[0], this.points[1]); // this will idicate the direction of the first point and also if p1 is near or far
-        if (p0FarOrNear === DIRECTION.STRAIGHT) {
-            // will be unhadled for now
-            return null;
+        let type = TYPE.NORMAL;
+        if (getTurn(point, this.points[0], this.points[1]) === DIRECTION.RIGHT && getTurn(point, this.points[0], this.points[this.length()-1]) === DIRECTION.LEFT) {
+            type = TYPE.INVERSE;
         }
         let oppositeofP1 = BinarySearch(1, this.length()-1, (i) => {  // todo check if the point is on the line for oppite == 0
-            let v = getTurn(point, this.points[0], this.points[i]) === p0FarOrNear;
+            let v = getTurn(point, this.points[0], this.points[i]) === (type===TYPE.NORMAL ? DIRECTION.LEFT:DIRECTION.RIGHT);
+            // the rule of the TYPE is for the case where the point is on the blue region in the referece image
             return v;
         });
-        print("opo=:",oppositeofP1);
+        
         if (oppositeofP1 === -1) {
-            exit();
-            return null; // this will be unhadled for now
+            if (type === TYPE.INVERSE){
+                print("oppositeofP1=:",oppositeofP1);
+                exit();
+            }
+            oppositeofP1 = 0;
         }
 
-        let isP0far = p0FarOrNear===DIRECTION.LEFT;
-        if (isP0far) {
-            return {
-                p0: DISTANCE.FAR,
-                compl: oppositeofP1,
-            };
-        } else{
-            return {
-                p0: DISTANCE.NEAR,
-                compl: oppositeofP1,
-            };
-        }
+        return {
+            p0: type,
+            compl: oppositeofP1
+        };
+        
+
     }
         
     getUpperTangentFacingPoint(point){
@@ -62,45 +59,51 @@ class Polygon{
         }
         let nearAndFar = this._getNearAndFarSide(point);
         let upperTangent = null;
-
-        let dir = nearAndFar.p0 === DISTANCE.NEAR? DIRECTION.LEFT : DIRECTION.RIGHT;
-        let functionToUse = (i) => { return getTurn(point, this.points[i], this.points[(i+1)%this.length()] ) === dir; };
-        if (nearAndFar.compl ===  this.length()-1) {
-            upperTangent = BinarySearch(1, nearAndFar.compl, functionToUse);
-        }else{
-            upperTangent = BinarySearch(nearAndFar.compl, this.length()-1, functionToUse);
+        let lowerBound = nearAndFar.compl;
+        let upperBound = this.length()-1;
+        if (nearAndFar.p0 === TYPE.INVERSE) {
+            lowerBound = 0;
+            upperBound = nearAndFar.compl;
         }
-        print("upperTangent=:",upperTangent);
+        let functionToUse = (i) => { return getTurn(point, this.points[i], this.points[(i+1)%this.length()] ) === DIRECTION.RIGHT; };
+        upperTangent = BinarySearch(lowerBound,upperBound, functionToUse);
+        
+        if (upperTangent === -1) {
+            upperTangent = lowerBound;
+        }else {
+            upperTangent = (1+upperTangent)%this.length();
+        }
         return this.points[upperTangent];
-
-    
     }
 
     getLowerTangentFacingPoint(point){
-
         if (this.isPointInside(point) === ISINSIDE.INSIDE) {
             return null;
         }
         let nearAndFar = this._getNearAndFarSide(point);
-        let lowerTangent = null;
-        if (nearAndFar.p0 === DISTANCE.NEAR) {
-            lowerTangent = BinarySearch(nearAndFar.near, nearAndFar.far, (i) => {
-                return getTurn(point, this.points[i], points[(i+1)%n] ) === DIRECTION.RIGHT;
-            });
-        } else{
-            lowerTangent = BinarySearch(nearAndFar.far, nearAndFar.near, (i) => {
-                return getTurn(point, this.points[i], points[(i+1)%n] ) === DIRECTION.LEFT;
-            });
+        let upperTangent = null;
+        let lowerBound = 0;
+        let upperBound = nearAndFar.compl;
+        if (nearAndFar.p0 === TYPE.INVERSE) {
+            lowerBound = nearAndFar.compl;
+            upperBound = this.length()-1;
         }
-        return lowerTangent;
+        let functionToUse = (i) => { return getTurn(point, this.points[i], this.points[(i+1)%this.length()] ) === DIRECTION.LEFT; };
+        upperTangent = BinarySearch(lowerBound,upperBound, functionToUse);
+        if (upperTangent === -1) {
+            upperTangent = lowerBound;
+        }else {
+            upperTangent = (1+upperTangent)%this.length();
+        }
+        return this.points[upperTangent];
     }
 
 
 }
 
-const DISTANCE ={
-    NEAR: "near",
-    FAR: "far"
+const TYPE ={
+    NORMAL: 0,
+    INVERSE: 1,
 }
 
 
