@@ -2,6 +2,7 @@
 // global variables
 
 var polygon = null;
+var ear = null;
 // ---------------------------------------------------------------------view functions ---------------------------------------------------------------------
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -11,7 +12,7 @@ function setup() {
   fill("black");
   textSize(40);
   button = customButton(30, 85, "Clear", resetpoints);
-  button = customButton(30, 120, "find ears", () => {null;});
+  button = customButton(30, 120, "find ears", () => {getEar();});
 }
 
 function customButton(x, y, text, callback) {
@@ -26,6 +27,7 @@ function customButton(x, y, text, callback) {
 function resetpoints() {
   let p = [];
   polygon = new PolygonStruct(p);
+  ear = null;
 }
 
 function draw() {
@@ -43,6 +45,13 @@ function draw() {
       } else {
         line(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
       }
+    }
+    if (ear != null) {
+      let a = ear;
+      let b = points[(a + 1) % points.length];
+      let c = points[(a - 1 + points.length) % points.length];
+      fill("green");
+      triangle(points[a].x, points[a].y, b.x, b.y, c.x, c.y);
     }
     fill("gray");
     rect(0, 0, 200, height);
@@ -84,5 +93,18 @@ function drawPolygone() {
         line(polygonPoints[i].x, polygonPoints[i].y, polygonPoints[i + 1].x, polygonPoints[i + 1].y);
       }
     }
+  }
+}
+
+function getEar() {
+  if (polygon == null) {
+    print("No polygon found");
+    return;
+  }
+  ear = polygon.getEar();
+  if (ear != null) {
+    print("Ear found");
+  } else {
+    print("No ear found");
   }
 }

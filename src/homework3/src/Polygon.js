@@ -34,6 +34,30 @@ class Polygon{
         return true;
     }
 
+    getEar(){
+        return this._getEarUsingConvexProperty();
+    }
+
+    _getEarUsingConvexProperty(){
+        let n = this.length();
+        let i = 0;
+        while (true) {
+            let pi_convexity = isALeftTurn(this.points[(i-1+n)%n], this.points[i], this.points[(i+1)%n]);
+            if (pi_convexity === true) {
+                let piminus1_convexity = isALeftTurn(this.points[(i-2+n)%n], this.points[(i-1+n)%n], this.points[i]);
+                let piplus1_convexity = isALeftTurn(this.points[i], this.points[(i+1)%n], this.points[(i+2)%n]);
+                if (piminus1_convexity === true && piplus1_convexity === true) {
+                    return i;
+                }
+            }
+            i += 1;
+            if (i >= n) {
+                return null;
+            }
+            
+        }
+    }
+
     getPoints(){
         return this.points.slice();
     }
