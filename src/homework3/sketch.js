@@ -3,6 +3,7 @@
 
 var polygon = null;
 var ear = null;
+var wantToDrawAllTriangles = false;
 // ---------------------------------------------------------------------view functions ---------------------------------------------------------------------
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -13,6 +14,7 @@ function setup() {
   textSize(40);
   button = customButton(30, 85, "Clear", resetpoints);
   button = customButton(30, 120, "find ears", () => {getEar();});
+  button = customButton(30, 155, "draw triangulation", () =>{wantToDrawAllTriangles = !wantToDrawAllTriangles;});
 }
 
 function customButton(x, y, text, callback) {
@@ -53,6 +55,18 @@ function draw() {
       fill("green");
       triangle(points[a].x, points[a].y, b.x, b.y, c.x, c.y);
     }
+    if (wantToDrawAllTriangles) {
+      let triangles = polygon.getAllTriangle();
+      let colors = ["red", "blue", "green", "yellow", "purple", "orange"];
+      for (let i = 0; i < triangles.length; i++) {
+        fill(colors[i % colors.length]);
+        let triangle = triangles[i];
+        let points = triangle.getPoints();
+        print(points);
+        triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y);
+      }
+    } 
+    
     fill("gray");
     rect(0, 0, 200, height);
     fill("black");

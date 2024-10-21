@@ -1,9 +1,11 @@
 import { getTurn, isALeftTurn , normVectorCross } from "./base_structure/Point.js";
 import { DIRECTION , ISINSIDE, DISTANCE} from "./base_structure/Const.js";
-
+import { Triangle } from "./base_structure/Triangle.js";
 class Polygon{
     constructor(points){
         this.points = points;
+        this.earSet = [];
+        this.modified = false;
     }
     
     last(){
@@ -17,8 +19,10 @@ class Polygon{
     addNoneCrossingPoint(point){
         if (this.length() < 3) {
             this.points.push(point);
+            this.modified = true;
             return true;
         }
+        this._sortReverseClockwise();
         const doesIntersect = (p1, p2, p3, p4) => {
             return normVectorCross(p1, p2, p3) * normVectorCross(p1, p2, p4) < 0 &&
                    normVectorCross(p3, p4, p1) * normVectorCross(p3, p4, p2) < 0;
@@ -31,11 +35,36 @@ class Polygon{
             }
         }
         this.points.push(point);
+        this.modified = true;
         return true;
     }
 
     getEar(){
         return this._getEarUsingConvexProperty();
+    }
+
+    getAllTriangle(){
+        if (this.modified === false) {
+            return this.earSet;
+        }
+        let base_set = this.getPoints();
+        let n = this.length();
+        let triangles = [];
+        while (n > 3) {
+            let ear = this.getEar();
+            if (ear === null) {
+                return [];
+            }
+            triangles.push(new Triangle(this.points[(ear-1+n)%n], this.points[ear], this.points[(ear+1)%n]));
+            // eject the ear from the polygon
+            this.points.splice(ear, 1);
+            n -= 1;
+        }
+        triangles.push(new Triangle(this.points[0], this.points[1], this.points[2]));
+        this.earSet = triangles;
+        this.modified = false;
+        this.points = base_set;
+        return triangles;
     }
 
     _getEarUsingConvexProperty(){
@@ -58,7 +87,20 @@ class Polygon{
         }
     }
 
-    getPoints(){
+    _sortReverseClockwise(){
+        let n = this.length();
+        let min_index = 0;
+        for (let i = 1; i < n; i++) {
+            if (this.points[i].x < this.points[min_index].x) {
+                min_index = i;
+            }
+        }
+        if (getTurn(this.points[(min_index-1+n)%n], this.points[min_index], this.points[(min_index+1)%n]) === DIRECTION.RIGHT) {
+            this.points.reverse();
+        }
+    }
+    
+        getPoints(){
         return this.points.slice();
     }
 
