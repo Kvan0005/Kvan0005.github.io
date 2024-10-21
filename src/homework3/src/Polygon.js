@@ -1,7 +1,7 @@
 import { getTurn, isALeftTurn , normVectorCross } from "./base_structure/Point.js";
 import { DIRECTION , ISINSIDE, DISTANCE} from "./base_structure/Const.js";
-import { Triangle } from "./base_structure/Triangle.js";
-class Polygon{
+import { Triangle } from "./base_structure/triangle.js";
+export class Polygon{
     constructor(points){
         this.points = points;
         this.earSet = [];
@@ -130,7 +130,6 @@ class Polygon{
             let v = getTurn(point, this.points[0], this.points[i]) === p0FarOrNear;
             return v;
         });
-        print("opo=:",oppositeofP1);
         if (oppositeofP1 === -1) {
             exit();
             return null; // this will be unhadled for now
@@ -160,7 +159,6 @@ class Polygon{
         let dir = nearAndFar.p0 === DISTANCE.NEAR? DIRECTION.LEFT : DIRECTION.RIGHT;
         let functionToUse = (i) => { return getTurn(point, this.points[i], this.points[(i+1)%this.length()] ) === dir; };
         upperTangent = BinarySearch(nearAndFar.compl, this.length()-1, functionToUse)+1;
-        print("upperTangent=:",upperTangent);
         return this.points[upperTangent];
 
     
@@ -186,9 +184,4 @@ class Polygon{
     }
 
 
-}
-
-
-if (window.PolygonStruct == undefined) {
-    window.PolygonStruct = Polygon;
 }
