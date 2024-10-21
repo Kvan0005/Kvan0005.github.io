@@ -28,6 +28,7 @@ const s = (p) => { // p refers to the p5 instance
     let pnts = [];
     polygon = new Polygon(pnts);
     ear = null;
+    wantToDrawAllTriangles = false;
   }
 
   p.draw = function() {

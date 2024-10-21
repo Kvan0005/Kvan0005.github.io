@@ -1,4 +1,4 @@
-function BinarySearch(lower, upper, callback){
+export function BinarySearch(lower, upper, callback){
     if (callback(upper)){
         return upper;
     }
@@ -27,10 +27,4 @@ function allSame(lower, upper, callback){
         list.push(callback(i));
     }
     return list.every((val, i, arr) => val === arr[0]);
-}
-
-
-
-if (window.BinarySearch === undefined) {
-    window.BinarySearch = BinarySearch;
 }

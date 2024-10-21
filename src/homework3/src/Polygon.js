@@ -1,6 +1,7 @@
 import { getTurn, isALeftTurn , normVectorCross } from "./base_structure/Point.js";
 import { DIRECTION , ISINSIDE, DISTANCE} from "./base_structure/Const.js";
 import { Triangle } from "./base_structure/triangle.js";
+import { BinarySearch } from "./BinarySearch.js";
 export class Polygon{
     constructor(points){
         this.points = points;
@@ -19,10 +20,10 @@ export class Polygon{
     addNoneCrossingPoint(point){
         if (this.length() < 3) {
             this.points.push(point);
-            this.modified = true;
             return true;
         }
-        this._sortReverseClockwise();
+        this.modified = true;
+        if (this.length() == 3) {this._sortReverseClockwise()}
         const doesIntersect = (p1, p2, p3, p4) => {
             return normVectorCross(p1, p2, p3) * normVectorCross(p1, p2, p4) < 0 &&
                    normVectorCross(p3, p4, p1) * normVectorCross(p3, p4, p2) < 0;
@@ -35,7 +36,6 @@ export class Polygon{
             }
         }
         this.points.push(point);
-        this.modified = true;
         return true;
     }
 
@@ -47,22 +47,30 @@ export class Polygon{
         if (this.modified === false) {
             return this.earSet;
         }
+        // do iteratively until there are only 3 points left
+        // create a copy of the points
         let base_set = this.getPoints();
-        let n = this.length();
+
+        // while there are more than 3 points take an ear and create a triangle
         let triangles = [];
-        while (n > 3) {
-            let ear = this.getEar();
+        while (this.length() > 3) {
+            let ear = this._getEarUsingConvexProperty();
             if (ear === null) {
-                return [];
+                this.points = base_set;
+                return triangles;
             }
-            triangles.push(new Triangle(this.points[(ear-1+n)%n], this.points[ear], this.points[(ear+1)%n]));
-            // eject the ear from the polygon
+            let p1 = this.points[(ear-1+this.length())%this.length()];
+            let p2 = this.points[ear];
+            let p3 = this.points[(ear+1)%this.length()];
+            triangles.push(new Triangle(p1, p2, p3));
             this.points.splice(ear, 1);
-            n -= 1;
         }
+
+        // create the last triangle
         triangles.push(new Triangle(this.points[0], this.points[1], this.points[2]));
         this.earSet = triangles;
         this.modified = false;
+        // reform the original points 
         this.points = base_set;
         return triangles;
     }
@@ -73,19 +81,28 @@ export class Polygon{
         while (true) {
             let pi_convexity = isALeftTurn(this.points[(i-1+n)%n], this.points[i], this.points[(i+1)%n]);
             if (pi_convexity === true) {
-                let piminus1_convexity = isALeftTurn(this.points[(i-2+n)%n], this.points[(i-1+n)%n], this.points[i]);
-                let piplus1_convexity = isALeftTurn(this.points[i], this.points[(i+1)%n], this.points[(i+2)%n]);
-                if (piminus1_convexity === true && piplus1_convexity === true) {
+                let triangle = new Polygon([this.points[(i-1+n)%n], this.points[i], this.points[(i+1)%n]]);
+                let isEar = true;
+                for (let j = 0; j < n; j++) {
+                    if (j === i || j === (i-1+n)%n || j === (i+1)%n) {
+                        continue;
+                    }
+                    if (triangle.isPointInside(this.points[j]) === ISINSIDE.INSIDE) {
+                        isEar = false;
+                        break;
+                    }
+                }
+                if (isEar) {
                     return i;
                 }
             }
-            i += 1;
+            i++;
             if (i >= n) {
                 return null;
             }
-            
         }
     }
+
 
     _sortReverseClockwise(){
         let n = this.length();
@@ -114,7 +131,7 @@ export class Polygon{
         let lower_bound = BinarySearch(1, n-1, (i) => {
             return getTurn(cpoints[0], cpoints[i], point) === DIRECTION.LEFT; // this is a radial sweep then binary search to find the 2 points that the point is between
         });
-        if (lower_bound === -1 || point.x < cpoints[0].x) { // case where the point is to the left of the leftmost point meaning it is outside
+        if (lower_bound === -1) { // case where the point is to the left of the leftmost point meaning it is outside
             return ISINSIDE.OUTSIDE;
         }
         return getTurn(cpoints[lower_bound], cpoints[(lower_bound + 1)%n], point) != DIRECTION.RIGHT? ISINSIDE.INSIDE : ISINSIDE.OUTSIDE;
