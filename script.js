@@ -14,4 +14,8 @@ function redirect() {
     if (selected == "Homework 3") {
         window.location.href = "./src/homework3/index.html";
     }
+
+    if (selected == "Project") {
+        window.location.href = "./src/project/index.html";
+    }
 }
