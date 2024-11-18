@@ -18,21 +18,29 @@ class PolarDual {
         if (y === 0 && x === 0) {
             return null;
         }
-        if (y === 0) {
-            return new Line(, 1);
-        }
-        return new Line(-x / y, 1/y);
+        return new Line(x, y);
     }
 
-    private getDualOfLine(): Point  | null {
-        const { m, c } = this.primal as Line;
-        if (c === 0 && m === 0) {
-            return null
-        }
-        return new Point(-m/c, 1/c);
+    private getDualOfLine(): Point {
+        const { a, b } = this.primal as Line;
+        return new Point(a, b);
+    }
+
+    isDualValid(): boolean {
+        return this.dual !== null;
+    }
+
+    getDual(): Line | Point | null {
+        return this.dual;
+    }
+
+    getPrimal(): Point | Line {
+        return this.primal;
+    }
+
+    getPrimalType(): OBJECT_TYPE {
+        return this.primalType;
     }
 }
-
-
 
 export { PolarDual };

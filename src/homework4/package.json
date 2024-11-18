@@ -2,7 +2,7 @@
   "name": "homework4",
   "version": "1.0.0",
   "description": "This is the HomeWork 4 of the course Computational Geometry.",
-  "main": "src/index.ts",
+  "main": "index.js",
   "scripts": {
     "run": "tsx .",
     "build": "tsc",

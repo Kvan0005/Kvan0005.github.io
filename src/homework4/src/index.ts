@@ -1,7 +1,9 @@
-import { Point } from "./Point";
-import { Line } from "./Line";
+import { Point } from "./Point.js";
+import { Line } from "./Line.js";
+import { PolarDual } from "./PolarDual.js";
 
 export { 
     Point , 
-    Line
+    Line ,
+    PolarDual
 };

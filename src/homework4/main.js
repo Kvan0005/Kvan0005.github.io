@@ -1,9 +1,8 @@
 /* eslint-disable no-undef, no-unused-vars */
 // global variables
-
-import { Polygon } from "./src/Polygon.js"; // Import the Polygon class
-
-let polygon = null;
+// import { Point } from "./build/index.js";
+import { Point } from "./build/index.js";
+let pnts = [];
 
 const s = (p) => { // p refers to the p5 instance
   p.setup = function() {
@@ -21,13 +20,16 @@ const s = (p) => { // p refers to the p5 instance
   };
 
   function resetpoints() {
-    let pnts = [];
-    polygon = new Polygon(pnts);
-    ear = null;
-    wantToDrawAllTriangles = false;
+    pnts = [];
   }
 
   p.draw = function() {
+    p.background(255);
+    p.text("Click to add a point", 10, 30
+    );
+    for (let i = 0; i < pnts.length; i++) {
+      p.ellipse(pnts[i].x, pnts[i].y, 10, 10);
+    }
   };
 
   p.mousePressed = function() {
@@ -35,6 +37,8 @@ const s = (p) => { // p refers to the p5 instance
       return;
     }
     // Add a point
+    pnts.push(new Point(p.mouseX, p.mouseY));
+    pnts.push(new Point("a", "b"));
   };
 
   p.windowResized = function() {
