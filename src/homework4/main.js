@@ -32,7 +32,7 @@ const s = (p) => { // p refers to the p5 instance
     for (let i = 0; i < defaultLine.length; i++) {
       primals.push(defaultLine[i]);
     }
-    // cell = [];
+    cell = [];
   }
 
   p.draw = function() {
@@ -44,13 +44,21 @@ const s = (p) => { // p refers to the p5 instance
     for (let i = 0; i < primals.length; i++) {
       primals[i].draw(p);
     }
-  
-    p.fill("green");
-    for (let i = 0; i < cell.length; i++) {
-      cell[i].draw(p);
+    
+    if (cell.length > 0) {
+      drawCell();
     }
-    p.fill("black");
   };
+
+  function drawCell() {
+    p.fill("red");
+    p.beginShape();
+    for (let i = 0; i < cell.length; i++) {
+      p.vertex(cell[i].x, cell[i].y);
+    }
+    p.endShape(p.CLOSE);
+    p.fill("black");
+  }
 
   p.mousePressed = function() {
     for (let i = 0; i < button_box.length; i++) { //TODO rectify alignment
@@ -87,6 +95,7 @@ const s = (p) => { // p refers to the p5 instance
   };
 
   function cellCalculation() {
+    cell = [];
     if (primals.length == 0) {
       return;
     }
@@ -96,14 +105,13 @@ const s = (p) => { // p refers to the p5 instance
       console.log("line");
     }
     let convex_hull = grahamScan(dual_list);
-    console.log(convex_hull);
     for (let i = 0; i < convex_hull.length; i++) {
       cell.push(convex_hull[i].getDual());
-      // let p = Line.fromTwoPoints(convex_hull[i], convex_hull[(i+1)%convex_hull.length]);
-      // cell.push(new PolarDualLine(p[0], p[1]).getDual());
-      // console.log(p[0], p[1]);
+      let p = Line.fromTwoPoints(convex_hull[i], convex_hull[(i+1)%convex_hull.length]);
+      cell.push(new PolarDualLine(p[0], p[1]).getDual());
     }
   }
+
   function runtests(){
     let t = [];
     for (let i = 0; i < 3; i++) {
