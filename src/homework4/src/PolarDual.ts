@@ -1,13 +1,13 @@
 import { Point, Line } from "./index.js";
-
+import { Shape } from "./Shape.js";
 type OBJECT_TYPE = "Point" | "Line";
 
 class PolarDual {
-    private primal: Point | Line;
-    private dual: Line | Point | null;
+    private primal: Shape;
+    private dual: Shape | null;
     private primalType: OBJECT_TYPE;
 
-    constructor(primal: Point | Line) {
+    constructor(primal: Shape) {
         this.primal = primal;
         this.primalType = primal instanceof Point ? "Point" : "Line";
         this.dual = this.primalType === "Point" ? this.getDualOfPoint() : this.getDualOfLine();
@@ -30,11 +30,14 @@ class PolarDual {
         return this.dual !== null;
     }
 
-    getDual(): Line | Point | null {
+    getDual(): Shape {
+        if (this.dual === null) {
+            throw new Error("Dual is not valid");
+        }
         return this.dual;
     }
 
-    getPrimal(): Point | Line {
+    getPrimal(): Shape {
         return this.primal;
     }
 
@@ -44,9 +47,9 @@ class PolarDual {
 
     draw(p5: any): void {
         if (this.primalType === "Point") {
-            (this.primal as Point).draw(p5);
+            this.primal.draw(p5);
         } else {
-            (this.primal as Line).draw(p5);
+            this.primal.draw(p5);
         } 
     }
 }

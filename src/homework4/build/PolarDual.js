@@ -20,6 +20,9 @@ class PolarDual {
         return this.dual !== null;
     }
     getDual() {
+        if (this.dual === null) {
+            throw new Error("Dual is not valid");
+        }
         return this.dual;
     }
     getPrimal() {

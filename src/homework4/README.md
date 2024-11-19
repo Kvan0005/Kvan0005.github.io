@@ -5,3 +5,10 @@ Let the user draw a set of lines. The program should highlight (in a different c
 .
 
 The convex hull of the dual points corresponds to the structure of the cell: each edge of the convex hull of the dual points corresponds to a vertex of the cell. Look at what happens when the cell is unbounded!
+
+
+
+# todolist
+  - [x] draw a set of lines using mouse
+  - [x] redo the convex hull of the dual points
+  - [ ] highlight the cell that contains point (0,0)

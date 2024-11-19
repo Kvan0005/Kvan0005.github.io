@@ -10,7 +10,7 @@ class Point extends Shape {
     }
 
     draw(p5: any): void {
-        p5.elipse(this.x, this.y, 4, 4);
+        p5.ellipse(this.x, this.y, 4, 4);
     }
 }
 

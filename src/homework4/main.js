@@ -4,7 +4,9 @@
 import { Line, Point, PolarDual } from "./build/index.js";
 let pnts = [];
 let primals = [];
+let button_box = [];
 const s = (p) => { // p refers to the p5 instance
+  let defaultLine = [new Line(-p.windowWidth, 0), new Line(0, -p.windowHeight), new Line(p.windowWidth, 0), new Line(0, p.windowHeight)]; //? this is a hack for boundary lines 
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight);
     p.fill("black");
@@ -16,18 +18,20 @@ const s = (p) => { // p refers to the p5 instance
     let button = p.createButton(text);
     button.position(x, y);
     button.mousePressed(callback);
+    button_box.push(button);
     return button;
   };
 
   function resetpoints() {
     pnts = [];
     primals = [];
+    for (let i = 0; i < defaultLine.length; i++) {
+      primals.push(new PolarDual(defaultLine[i]));
+    }
   }
 
   p.draw = function() {
-    p.background(255);
-    p.text("Click to add a point", 10, 30
-    );
+    p.background(200);
     for (let i = 0; i < pnts.length; i++) {
       pnts[i].draw(p);
     }
@@ -38,8 +42,13 @@ const s = (p) => { // p refers to the p5 instance
   };
 
   p.mousePressed = function() {
-    if (p.mouseX < 200) {
-      return;
+    for (let i = 0; i < button_box.length; i++) { //TODO rectify alignment
+      if (p.mouseX > button_box[i].x-30 && 
+          p.mouseX < button_box[i].x + button_box[i].width+30 && 
+          p.mouseY > button_box[i].y-30 && 
+          p.mouseY < button_box[i].y + button_box[i].height+30) {
+        return;
+      }
     }
     // Add a point
     let newPoint = new Point(p.mouseX, p.mouseY);
