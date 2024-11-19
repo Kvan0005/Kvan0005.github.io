@@ -1,4 +1,4 @@
-import { Point, Line } from "./index";
+import { Point, Line } from "./index.js";
 
 type OBJECT_TYPE = "Point" | "Line";
 
@@ -40,6 +40,14 @@ class PolarDual {
 
     getPrimalType(): OBJECT_TYPE {
         return this.primalType;
+    }
+
+    draw(p5: any): void {
+        if (this.primalType === "Point") {
+            (this.primal as Point).draw(p5);
+        } else {
+            (this.primal as Line).draw(p5);
+        } 
     }
 }
 

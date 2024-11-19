@@ -1,9 +1,9 @@
 /* eslint-disable no-undef, no-unused-vars */
 // global variables
 // import { Point } from "./build/index.js";
-import { Point } from "./build/index.js";
+import { Line, Point, PolarDual } from "./build/index.js";
 let pnts = [];
-
+let primals = [];
 const s = (p) => { // p refers to the p5 instance
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -21,6 +21,7 @@ const s = (p) => { // p refers to the p5 instance
 
   function resetpoints() {
     pnts = [];
+    primals = [];
   }
 
   p.draw = function() {
@@ -28,7 +29,11 @@ const s = (p) => { // p refers to the p5 instance
     p.text("Click to add a point", 10, 30
     );
     for (let i = 0; i < pnts.length; i++) {
-      p.ellipse(pnts[i].x, pnts[i].y, 10, 10);
+      pnts[i].draw(p);
+    }
+
+    for (let i = 0; i < primals.length; i++) {
+      primals[i].draw(p);
     }
   };
 
@@ -37,8 +42,12 @@ const s = (p) => { // p refers to the p5 instance
       return;
     }
     // Add a point
-    pnts.push(new Point(p.mouseX, p.mouseY));
-    pnts.push(new Point("a", "b"));
+    let newPoint = new Point(p.mouseX, p.mouseY);
+    if (pnts.length ==  0) {
+      pnts.push(newPoint);
+    }else {
+      primals.push(new PolarDual(Line.fromTwoPoints(pnts.shift(), newPoint)));
+    }
   };
 
   p.windowResized = function() {

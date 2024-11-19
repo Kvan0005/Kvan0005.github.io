@@ -1,0 +1,3 @@
+class Shape {
+}
+export { Shape };
