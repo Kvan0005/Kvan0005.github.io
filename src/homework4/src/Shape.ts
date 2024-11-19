@@ -1,5 +1,5 @@
-abstract class Shape {
-    abstract draw(p5: any): void;
+interface Shape {
+    draw(p5: any): void;
 }
 
 

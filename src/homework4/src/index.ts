@@ -1,9 +1,12 @@
 import { Point } from "./Point.js";
 import { Line } from "./Line.js";
-import { PolarDual } from "./PolarDual.js";
+import { PolarDualLine, PolarDualPoint } from "./PolarDual.js";
+import { grahamScan } from "./ConvexHull.js";
 
 export { 
     Point , 
     Line ,
-    PolarDual
+    PolarDualLine,
+    PolarDualPoint,
+    grahamScan
 };

@@ -1,7 +1,5 @@
-import { Shape } from "./Shape.js";
-class Line extends Shape {
+class Line {
     constructor(a, b) {
-        super();
         this.a = a;
         this.b = b;
     }
@@ -19,16 +17,16 @@ class Line extends Shape {
     }
     static fromTwoPoints(p1, p2) {
         if (p1.x === p2.x) {
-            return new Line(1 / p1.x, 0);
+            return [1 / p1.x, 0];
         }
         const slope = (p2.y - p1.y) / (p2.x - p1.x);
         const yIntercept = p1.y - slope * p1.x;
         if (yIntercept === 0) {
-            null;
+            return null;
         }
         const a = -slope / yIntercept;
         const b = 1 / yIntercept;
-        return new Line(a, b);
+        return [a, b];
     }
     getYpoint(x) {
         return x * this.getSlope() + this.getYIntercept();
