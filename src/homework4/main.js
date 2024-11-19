@@ -6,7 +6,7 @@ let pnts = [];
 let primals = [];
 let button_box = [];
 const s = (p) => { // p refers to the p5 instance
-  let defaultLine = [new Line(-p.windowWidth, 0), new Line(0, -p.windowHeight), new Line(p.windowWidth, 0), new Line(0, p.windowHeight)]; //? this is a hack for boundary lines 
+  let defaultLine = [new Line(1/-p.windowWidth, 0), new Line(0, 1/-p.windowHeight), new Line(1/p.windowWidth, 0), new Line(0, 1/p.windowHeight)]; //? this is a hack for boundary lines 
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight);
     p.fill("black");
