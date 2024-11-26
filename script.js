@@ -20,6 +20,6 @@ function redirect() {
     }
 
     if (selected == "Project") {
-        window.location.href = "./index.html";
+        window.location.href = "./Attraction-convexity-and-Normal-Visibility-project/index.html";
     }
 }
