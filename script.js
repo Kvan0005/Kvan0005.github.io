@@ -20,6 +20,6 @@ function redirect() {
     }
 
     if (selected == "Project") {
-        window.location.href = "./src/project/index.html";
+        window.location.href = "./index.html";
     }
 }

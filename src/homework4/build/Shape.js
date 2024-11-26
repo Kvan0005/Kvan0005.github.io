@@ -1,3 +1,1 @@
-class Shape {
-}
-export { Shape };
+export {};
