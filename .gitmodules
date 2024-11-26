@@ -1,6 +1,3 @@
-[submodule "src/Attraction-convexity-and-Normal-Visibility-project"]
-	path = src/Attraction-convexity-and-Normal-Visibility-project
-	url = git@github.com:Kvan0005/Attraction-convexity-and-Normal-Visibility-project.git
 [submodule "Attraction-convexity-and-Normal-Visibility-project"]
 	path = Attraction-convexity-and-Normal-Visibility-project
-	url = git@github.com:Kvan0005/Attraction-convexity-and-Normal-Visibility-project.git
+	url = https://github.com/Kvan0005/Attraction-convexity-and-Normal-Visibility-project.git
